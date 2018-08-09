@@ -1,0 +1,43 @@
+plugins {
+    // Apply the scala plugin to add support for Scala
+    id 'scala'
+}
+
+group = 'com.manu.spark'
+version = '1.1'
+
+description = """altea-ldm-r2d"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+
+
+repositories {
+        
+     maven { url "https://repository.cloudera.com/artifactory/cloudera-repos/" }
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compile group: 'com.github.scopt', name: 'scopt_2.11', version:'3.6.0'
+    compile group: 'com.databricks', name: 'spark-avro_2.11', version:'4.0.0'
+    compile group: 'org.scala-lang', name: 'scala-library', version:'2.11.8'
+    compile group: 'org.apache.spark', name: 'spark-core_2.11', version:'2.2.0.cloudera2'
+    compile group: 'org.apache.spark', name: 'spark-sql_2.11', version:'2.2.0.cloudera2'
+    testCompile group: 'org.scalatest', name: 'scalatest_2.11', version:'3.0.4'
+    testCompile group: 'junit', name: 'junit', version:'4.11'
+    testCompile group: 'com.holdenkarau', name: 'spark-testing-base_2.11', version:'2.2.0_0.8.0'
+    compileOnly group: 'log4j', name: 'log4j', version:'1.2.17'
+}
+test{
+    maxHeapSize = "512m"
+}
+task fatjar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'com.manu.spark.Main'
+    }
+    baseName = project.name
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+    zip64 true
+}
